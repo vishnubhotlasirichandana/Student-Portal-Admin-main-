@@ -62,6 +62,17 @@ const Overview = () => {
             animate={{ opacity: 1, y: 0 }}
             className="overview-page"
         >
+            <style>{`
+                .responsive-stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1.5rem;
+                }
+                @media (max-width: 640px) {
+                    .overview-page { overflow-x: hidden; }
+                }
+            `}</style>
+
             <div style={{ marginBottom: '2rem' }}>
                 <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem', fontFamily: 'Outfit, sans-serif' }}>Dashboard Overview</h1>
                 <p style={{ color: 'var(--text-secondary)' }}>Welcome back! Here is a real-time look at your organization's activity.</p>

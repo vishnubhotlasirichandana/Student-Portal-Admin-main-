@@ -5,14 +5,12 @@ import { LayoutDashboard, FolderKanban, MessageSquare, LogOut, Menu, X, ShieldCh
 import { authApi, notificationApi } from '../services/api';
 
 const DashboardLayout = () => {
-    // Default open on desktop, closed on mobile
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [notifications, setNotifications] = useState([]);
     const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
     const navigate = useNavigate();
 
-    // Fetch notifications
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
@@ -71,7 +69,6 @@ const DashboardLayout = () => {
     return (
         <div className="dashboard-container" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-color)', overflow: 'hidden' }}>
 
-            {/* Mobile Backdrop Overlay */}
             <AnimatePresence>
                 {isMobile && sidebarOpen && (
                     <motion.div
@@ -84,7 +81,6 @@ const DashboardLayout = () => {
                 )}
             </AnimatePresence>
 
-            {/* Sidebar */}
             <aside
                 className={`dashboard-sidebar ${sidebarOpen ? 'open' : 'closed'}`}
             >
@@ -127,7 +123,6 @@ const DashboardLayout = () => {
                 </div>
             </aside>
 
-            {/* Main Content Area */}
             <main style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0 }}>
                 <header className="dashboard-topbar">
                     <button style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setSidebarOpen(!sidebarOpen)}>
@@ -139,7 +134,6 @@ const DashboardLayout = () => {
                             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Dashboard Access</span>
                         </div>
 
-                        {/* Notifications */}
                         <div className="notification-wrapper" style={{ position: 'relative' }}>
                             <button
                                 className="notification-btn"
@@ -223,6 +217,13 @@ const DashboardLayout = () => {
             <style>{`
                 @media (max-width: 640px) {
                     .hide-on-mobile { display: none !important; }
+                    .notification-dropdown {
+                        position: absolute;
+                        right: -50px !important; 
+                        width: 90vw !important;
+                        max-width: 340px !important;
+                    }
+                    .dashboard-topbar { padding: 0.75rem 1rem !important; }
                 }
             `}</style>
         </div>

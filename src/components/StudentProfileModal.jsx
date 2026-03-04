@@ -33,7 +33,14 @@ const StudentProfileModal = ({ studentId, onClose }) => {
     };
 
     return (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '2rem' }}>
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '1rem' }}>
+            <style>{`
+                .profile-content-wrapper { padding: 4rem 2rem 2rem 2rem; }
+                @media (max-width: 640px) {
+                    .profile-content-wrapper { padding: 4rem 1rem 1rem 1rem; }
+                }
+            `}</style>
+            
             <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -42,7 +49,6 @@ const StudentProfileModal = ({ studentId, onClose }) => {
                 className="glass scrollbar-custom"
                 style={{ width: '100%', maxWidth: '900px', maxHeight: '90vh', overflowY: 'auto', padding: '0', borderRadius: '24px', background: 'var(--bg-color)', border: '1px solid hsla(0,0%,100%,0.1)' }}
             >
-                {/* Decorative header gradient */}
                 <div style={{ height: '120px', background: 'linear-gradient(135deg, hsla(240, 100%, 70%, 0.2), hsla(280, 100%, 65%, 0.2))', position: 'relative' }}>
                     <div style={{ position: 'absolute', bottom: '-40px', left: '2rem', width: '100px', height: '100px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', border: '6px solid var(--bg-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '2rem', fontWeight: 700, boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
                         {data?.profile?.userRef?.name?.charAt(0) || 'S'}
@@ -50,14 +56,13 @@ const StudentProfileModal = ({ studentId, onClose }) => {
                     <button onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', cursor: 'pointer', borderRadius: '50%', padding: '0.5rem', backdropFilter: 'blur(5px)' }}><X size={20} /></button>
                 </div>
 
-                <div style={{ padding: '4rem 2rem 2rem 2rem' }}>
+                <div className="profile-content-wrapper">
                     {loading ? (
                         <div style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '2rem' }}>Loading profile...</div>
                     ) : error ? (
                         <div style={{ color: 'var(--error)', textAlign: 'center', padding: '2rem' }}>{error}</div>
                     ) : data && data.profile ? (
                         <motion.div variants={containerVariants} initial="hidden" animate="show" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-                            {/* Header Info */}
                             <motion.div variants={itemVariants}>
                                 <h1 style={{ fontSize: '2rem', marginBottom: '0.25rem', fontWeight: 700 }}>{data.profile.userRef?.name}</h1>
                                 <p style={{ color: 'var(--primary)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -67,7 +72,6 @@ const StudentProfileModal = ({ studentId, onClose }) => {
                                 <p style={{ marginTop: '1.5rem', lineHeight: '1.6', fontSize: '1.05rem', color: 'hsla(0,0%,100%,0.9)' }}>{data.profile.bio || 'No bio provided.'}</p>
                             </motion.div>
 
-                            {/* Tech Stack Tags */}
                             {data.profile.techStack && data.profile.techStack.length > 0 && (
                                 <motion.div variants={itemVariants}>
                                     <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 600 }}>Skills & Expertise</h3>
@@ -85,7 +89,6 @@ const StudentProfileModal = ({ studentId, onClose }) => {
                                 </motion.div>
                             )}
 
-                            {/* Experience & Education Grid */}
                             <motion.div variants={itemVariants} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                                 <motion.div whileHover={{ y: -5 }} className="glass" style={{ padding: '1.5rem', borderRadius: '16px', border: '1px solid hsla(0,0%,100%,0.05)' }}>
                                     <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>
@@ -119,7 +122,6 @@ const StudentProfileModal = ({ studentId, onClose }) => {
                                 </motion.div>
                             </motion.div>
 
-                            {/* Highlighted Portfolio */}
                             <motion.div variants={itemVariants}>
                                 <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <div style={{ padding: '0.5rem', background: 'hsla(240, 100%, 70%, 0.2)', borderRadius: '8px', color: 'var(--primary)' }}><FileText size={20} /></div>

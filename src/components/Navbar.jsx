@@ -8,29 +8,43 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <nav className="navbar glass">
-            <div className="nav-content">
-                <Link to="/" className="nav-logo">
-                    <Layout className="logo-icon" />
-                    <span>Admin<span className="accent">Connect</span></span>
-                </Link>
+        <>
+            <style>{`
+                .navbar { width: 100%; box-sizing: border-box; overflow-x: hidden; }
+                .nav-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+                .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+                
+                @media (max-width: 640px) {
+                    .nav-content { justify-content: center; flex-direction: column; padding: 1rem 0; }
+                    .nav-links { justify-content: center; width: 100%; margin-top: 0.5rem; }
+                    .nav-item { font-size: 0.85rem; padding: 0.4rem 0.8rem; }
+                }
+            `}</style>
 
-                <div className="nav-links">
-                    <Link to="/" className={`nav-item ${isActive('/') ? 'active' : ''}`}>Home</Link>
-                    <Link to="/company" className={`nav-item ${isActive('/company') ? 'active' : ''}`}>
-                        <Building2 size={18} />
-                        <span>Company</span>
+            <nav className="navbar glass">
+                <div className="nav-content">
+                    <Link to="/" className="nav-logo">
+                        <Layout className="logo-icon" />
+                        <span>Admin<span className="accent">Connect</span></span>
                     </Link>
-                    <Link to="/university" className={`nav-item ${isActive('/university') ? 'active' : ''}`}>
-                        <GraduationCap size={18} />
-                        <span>University</span>
-                    </Link>
-                </div>
 
-                <div className="nav-actions">
+                    <div className="nav-links">
+                        <Link to="/" className={`nav-item ${isActive('/') ? 'active' : ''}`}>Home</Link>
+                        <Link to="/company" className={`nav-item ${isActive('/company') ? 'active' : ''}`}>
+                            <Building2 size={18} />
+                            <span>Company</span>
+                        </Link>
+                        <Link to="/university" className={`nav-item ${isActive('/university') ? 'active' : ''}`}>
+                            <GraduationCap size={18} />
+                            <span>University</span>
+                        </Link>
+                    </div>
+
+                    <div className="nav-actions">
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </>
     );
 };
 

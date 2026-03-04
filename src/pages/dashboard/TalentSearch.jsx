@@ -1205,10 +1205,9 @@ const TalentSearch = () => {
     [query, filters, activeTab],
   );
 
-  // Initial load and tab change
   useEffect(() => {
     performSearch(1);
-  }, [activeTab]); // We don't map performSearch thoroughly into dependency perfectly to avoid jittery re-searches while typing filters. It triggers mainly on tab switching & manual search click.
+  }, [activeTab]);
 
   const handleSelectResult = async (item) => {
     const ownerId = item.ownerRef?._id;
@@ -1220,7 +1219,6 @@ const TalentSearch = () => {
         adminApi.getStudentPortfolio(ownerId),
       ]);
       const profileData = profileRes.data.data;
-      // Merge user info from the portfolio result owner
       const studentInfo = {
         _id: ownerId,
         firstName: item.ownerRef.firstName,
@@ -1286,14 +1284,22 @@ const TalentSearch = () => {
       exit={{ opacity: 0, y: -20 }}
     >
       <style>{`
-                @media (max-width: 768px) {
-                    .talent-results-grid { grid-template-columns: 1fr !important; }
-                }
-            `}</style>
+          .talent-layout {
+              display: grid;
+              grid-template-columns: minmax(250px, 300px) 1fr;
+              gap: 2rem;
+              align-items: flex-start;
+          }
+          @media (max-width: 1024px) {
+              .talent-layout { grid-template-columns: 1fr !important; }
+          }
+          @media (max-width: 768px) {
+              .talent-results-grid { grid-template-columns: 1fr !important; }
+          }
+      `}</style>
 
       {viewMode === "search" ? (
         <>
-          {/* Header */}
           <div style={{ marginBottom: "2rem" }}>
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -1319,7 +1325,6 @@ const TalentSearch = () => {
               </p>
             </motion.div>
 
-            {/* Tabs */}
             <div
               style={{
                 display: "flex",
@@ -1400,15 +1405,7 @@ const TalentSearch = () => {
             </div>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(250px, 300px) 1fr",
-              gap: "2rem",
-              alignItems: "flex-start",
-            }}
-          >
-            {/* Filters Sidebar */}
+          <div className="talent-layout">
             <div
               style={{
                 background: "#fff",
@@ -1434,7 +1431,6 @@ const TalentSearch = () => {
 
               {activeTab === "portfolios" && (
                 <>
-                  {/* Source */}
                   <div style={{ marginBottom: "1.25rem" }}>
                     <label
                       style={{
@@ -1470,7 +1466,6 @@ const TalentSearch = () => {
                       <option value="user">User Added Only</option>
                     </select>
                   </div>
-                  {/* Institution */}
                   <div style={{ marginBottom: "1.25rem" }}>
                     <label
                       style={{
@@ -1509,7 +1504,6 @@ const TalentSearch = () => {
 
               {activeTab === "students" && (
                 <>
-                  {/* Passout Year */}
                   <div style={{ marginBottom: "1.25rem" }}>
                     <label
                       style={{
@@ -1544,7 +1538,6 @@ const TalentSearch = () => {
                     />
                   </div>
 
-                  {/* Degree Category */}
                   <div style={{ marginBottom: "1.25rem" }}>
                     <label
                       style={{
@@ -1589,7 +1582,6 @@ const TalentSearch = () => {
                     </select>
                   </div>
 
-                  {/* Experience */}
                   <div
                     style={{
                       marginBottom: "1.5rem",
@@ -1625,8 +1617,6 @@ const TalentSearch = () => {
                 </>
               )}
 
-              {/* Shared Filters */}
-              {/* Skills */}
               <div style={{ marginBottom: "1.25rem" }}>
                 <label
                   style={{
@@ -1686,9 +1676,7 @@ const TalentSearch = () => {
               </button>
             </div>
 
-            {/* Main Content Area */}
             <div>
-              {/* Search Bar */}
               <motion.form
                 onSubmit={handleSearch}
                 initial={{ opacity: 0, y: 10 }}
@@ -1769,7 +1757,6 @@ const TalentSearch = () => {
                 </button>
               </motion.form>
 
-              {/* Results */}
               {loadingDetail && (
                 <div style={{ textAlign: "center", padding: "3rem" }}>
                   <div
@@ -1875,7 +1862,6 @@ const TalentSearch = () => {
                       ))}
                   </div>
 
-                  {/* Pagination */}
                   {total > 12 && (
                     <div
                       style={{
@@ -1947,7 +1933,6 @@ const TalentSearch = () => {
       )
       }
 
-      {/* Modals */}
       <AnimatePresence>
         {emailTarget && (
           <RecruitmentEmailModal

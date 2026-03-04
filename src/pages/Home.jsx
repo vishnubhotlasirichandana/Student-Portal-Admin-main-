@@ -8,10 +8,6 @@ import {
     ChevronRight, Server, Lock, Fingerprint, Activity
 } from 'lucide-react';
 
-// ==========================================
-// 1. DATA & CONFIGURATION (ENTERPRISE FOCUSED)
-// ==========================================
-
 const DEMO_STEPS = [
     {
         id: 0,
@@ -97,10 +93,6 @@ const METRICS_DATA = [
     { value: "99.9%", label: "Platform Uptime" }
 ];
 
-// ==========================================
-// 2. GLOBAL STYLES (Injected via Style Tag)
-// ==========================================
-
 const globalStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -185,13 +177,41 @@ const globalStyles = `
         0% { background-position: -1000px 0; }
         100% { background-position: 1000px 0; }
     }
+
+    /* =========================================
+       RESPONSIVE GRID SYSTEM INJECTED HERE
+       ========================================= */
+    .responsive-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: center;
+    }
+    .responsive-grid-auto-fit {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    .responsive-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+    .responsive-cta-buttons {
+        display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+
+    @media (max-width: 992px) {
+        .responsive-grid-2 { grid-template-columns: 1fr; }
+        .desktop-flex-nav { display: none !important; }
+    }
+    @media (max-width: 768px) {
+        .mobile-stack { flex-direction: column; width: 100%; align-items: stretch !important; }
+        .mobile-stack > a { text-align: center; justify-content: center; width: 100%; box-sizing: border-box; }
+        .responsive-grid-auto-fit { grid-template-columns: 1fr; }
+    }
 `;
 
-// ==========================================
-// 3. SUB-COMPONENTS
-// ==========================================
-
-// --- Shared: Stagger Variants ---
 const staggerContainer = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } }
@@ -202,7 +222,6 @@ const fadeUpVariant = {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 60, damping: 15 } }
 };
 
-// --- Navbar ---
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
 
@@ -253,13 +272,11 @@ const Navbar = () => {
     );
 };
 
-// --- Hero Section ---
 const HeroSection = () => {
     return (
         <div className="mesh-background" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', paddingTop: '80px', position: 'relative', overflow: 'hidden' }}>
             <div className="responsive-grid-2" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%' }}>
 
-                {/* Left Content */}
                 <motion.div variants={staggerContainer} initial="hidden" animate="show" style={{ zIndex: 10 }}>
                     <motion.div variants={fadeUpVariant} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.2rem', background: '#ffffff', border: '1px solid #e0f2fe', borderRadius: '50px', marginBottom: '2rem', boxShadow: '0 4px 15px rgba(14,165,233,0.1)' }}>
                         <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }} />
@@ -285,21 +302,18 @@ const HeroSection = () => {
                     </motion.div>
                 </motion.div>
 
-                {/* Right Visuals (Complex Abstract Dashboard UI) */}
                 <motion.div
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
                     style={{ position: 'relative', height: '600px', width: '100%', perspective: '1000px' }}
                 >
-                    {/* Main Dashboard Panel */}
                     <motion.div
                         animate={{ y: [-10, 10, -10] }}
                         transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
                         className="glass-panel"
                         style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotateY(-15deg) rotateX(5deg)', width: '120%', maxWidth: '600px', height: 'auto', padding: '1.5rem', zIndex: 2, background: 'rgba(255,255,255,0.85)' }}
                     >
-                        {/* Fake Header */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                                 <div style={{ width: '40px', height: '40px', background: '#0f172a', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Activity size={20} color="#fff" /></div>
@@ -315,9 +329,7 @@ const HeroSection = () => {
                             </div>
                         </div>
 
-                        {/* Fake Charts Area */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                            {/* Bar Chart Mockup */}
                             <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
                                 <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600, marginBottom: '1.5rem' }}>Active Projects</div>
                                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.8rem', height: '80px' }}>
@@ -326,7 +338,6 @@ const HeroSection = () => {
                                     ))}
                                 </div>
                             </div>
-                            {/* Stat Mockup */}
                             <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                 <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600, marginBottom: '0.5rem' }}>Talent Pipeline</div>
                                 <div className="outfit-font" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0f172a' }}>8,492</div>
@@ -336,7 +347,6 @@ const HeroSection = () => {
                             </div>
                         </div>
 
-                        {/* Fake List */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                             {[
                                 { name: "Stanford University", status: "Verified", color: "#10b981" },
@@ -356,7 +366,6 @@ const HeroSection = () => {
                         </div>
                     </motion.div>
 
-                    {/* Floating Decorative Elements */}
                     <motion.div
                         animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
                         transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
@@ -389,13 +398,11 @@ const HeroSection = () => {
     );
 };
 
-// --- SCROLL BOUND VIDEO SECTION ---
 const ScrollVideoSection = () => {
     const sectionRef = useRef(null);
     const videoRef = useRef(null);
     const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
 
-    // Enterprise-focused abstract network video
     const videoUrl = "https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-network-connections-loop-27361-large.mp4";
 
     useEffect(() => {
@@ -411,7 +418,6 @@ const ScrollVideoSection = () => {
         return () => cancelAnimationFrame(animationFrameId);
     }, [scrollYProgress]);
 
-    // Opacity and Y transforms for 3 distinct copy scenes
     const op1 = useTransform(scrollYProgress, [0, 0.1, 0.2, 0.3], [0, 1, 1, 0]);
     const y1 = useTransform(scrollYProgress, [0, 0.1, 0.3], [50, 0, -50]);
 
@@ -425,18 +431,15 @@ const ScrollVideoSection = () => {
         <div ref={sectionRef} style={{ height: '400vh', position: 'relative', background: '#020617' }}>
             <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 
-                {/* Scrubbing Video */}
                 <video
                     ref={videoRef} src={videoUrl} muted playsInline preload="auto"
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5, zIndex: 1, filter: 'grayscale(20%) hue-rotate(190deg) contrast(1.2)' }}
                 />
 
-                {/* Dark Blue Overlay */}
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(15,23,42,1) 0%, rgba(15,23,42,0.4) 50%, rgba(15,23,42,1) 100%)', zIndex: 2 }} />
 
                 <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '1200px', padding: '0 5%', textAlign: 'center', color: '#ffffff' }}>
 
-                    {/* Scene 1 */}
                     <motion.div style={{ position: 'absolute', width: '100%', left: 0, opacity: op1, y: y1 }}>
                         <div style={{ display: 'inline-block', padding: '0.5rem 1.5rem', background: 'rgba(14, 165, 233, 0.2)', border: '1px solid rgba(14, 165, 233, 0.4)', borderRadius: '50px', marginBottom: '1.5rem', color: '#38bdf8', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Global Infrastructure</div>
                         <h2 className="outfit-font" style={{ fontSize: 'clamp(3rem, 6vw, 5.5rem)', fontWeight: 800, margin: '0 0 1.5rem', lineHeight: 1.1 }}>
@@ -447,7 +450,6 @@ const ScrollVideoSection = () => {
                         </p>
                     </motion.div>
 
-                    {/* Scene 2 */}
                     <motion.div style={{ position: 'absolute', width: '100%', left: 0, opacity: op2, y: y2 }}>
                         <div style={{ display: 'inline-block', padding: '0.5rem 1.5rem', background: 'rgba(16, 185, 129, 0.2)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '50px', marginBottom: '1.5rem', color: '#34d399', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Immutable Identity</div>
                         <h2 className="outfit-font" style={{ fontSize: 'clamp(3rem, 6vw, 5.5rem)', fontWeight: 800, margin: '0 0 1.5rem', lineHeight: 1.1 }}>
@@ -458,7 +460,6 @@ const ScrollVideoSection = () => {
                         </p>
                     </motion.div>
 
-                    {/* Scene 3 */}
                     <motion.div style={{ position: 'absolute', width: '100%', left: 0, opacity: op3, y: y3 }}>
                         <div style={{ display: 'inline-block', padding: '0.5rem 1.5rem', background: 'rgba(139, 92, 246, 0.2)', border: '1px solid rgba(139, 92, 246, 0.4)', borderRadius: '50px', marginBottom: '1.5rem', color: '#a78bfa', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Frictionless Operations</div>
                         <h2 className="outfit-font" style={{ fontSize: 'clamp(3rem, 6vw, 5.5rem)', fontWeight: 800, margin: '0 0 1.5rem', lineHeight: 1.1 }}>
@@ -470,7 +471,6 @@ const ScrollVideoSection = () => {
                     </motion.div>
                 </div>
 
-                {/* Scroll Indicator */}
                 <div style={{ position: 'absolute', bottom: '3rem', left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.7 }}>
                     <span style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '1rem', fontWeight: 600 }}>System Initialization</span>
                     <div style={{ width: '2px', height: '60px', background: 'rgba(255,255,255,0.1)', overflow: 'hidden', borderRadius: '2px' }}>
@@ -482,8 +482,6 @@ const ScrollVideoSection = () => {
     );
 };
 
-// --- Interactive Story Demo (The Workflow) ---
-// Renders the specific UI mockup based on the active step
 const MockupRenderer = ({ type }) => {
     switch (type) {
         case 'search':
@@ -586,7 +584,6 @@ const WorkflowSection = () => {
 
                 <div className="responsive-grid-2">
 
-                    {/* Left: Step List */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {DEMO_STEPS.map((step, idx) => (
                             <div
@@ -624,9 +621,7 @@ const WorkflowSection = () => {
                         ))}
                     </div>
 
-                    {/* Right: Dynamic Visual Mockup */}
                     <div style={{ position: 'relative', height: '500px', background: '#ffffff', borderRadius: '32px', border: '1px solid #e2e8f0', boxShadow: '0 30px 60px -15px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-                        {/* Mockup Browser/Window Header */}
                         <div style={{ height: '40px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', padding: '0 1.5rem', gap: '0.5rem' }}>
                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f87171' }} />
                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#fbbf24' }} />
@@ -655,7 +650,6 @@ const WorkflowSection = () => {
     );
 };
 
-// --- Features Grid ---
 const FeaturesSection = () => {
     return (
         <div id="features" style={{ padding: '8rem 5%', background: '#ffffff', position: 'relative' }}>
@@ -681,7 +675,6 @@ const FeaturesSection = () => {
                             whileHover={{ y: -10, boxShadow: `0 25px 50px -12px ${feature.color}20`, borderColor: `${feature.color}50` }}
                             style={{ background: '#ffffff', border: '1px solid #f1f5f9', borderRadius: '24px', padding: '2.5rem', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative', overflow: 'hidden' }}
                         >
-                            {/* Decorative background flare */}
                             <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '150px', height: '150px', background: `${feature.color}10`, borderRadius: '50%', filter: 'blur(40px)', zIndex: 0 }} />
 
                             <div style={{ position: 'relative', zIndex: 1, width: '64px', height: '64px', borderRadius: '16px', background: `${feature.color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: feature.color }}>
@@ -699,11 +692,9 @@ const FeaturesSection = () => {
     );
 };
 
-// --- Statistics Section ---
 const StatsSection = () => {
     return (
         <div style={{ padding: '6rem 5%', background: '#0f172a', position: 'relative', overflow: 'hidden' }}>
-            {/* Background Graphic */}
             <div style={{ position: 'absolute', inset: 0, background: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%231e293b\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
 
             <div className="responsive-stats-grid" style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
@@ -725,7 +716,6 @@ const StatsSection = () => {
     );
 };
 
-// --- CTA Section ---
 const CTASection = () => {
     return (
         <div style={{ padding: '8rem 5%', background: '#ffffff' }}>
@@ -739,7 +729,6 @@ const CTASection = () => {
                         textAlign: 'center', position: 'relative', overflow: 'hidden', boxShadow: '0 30px 60px -15px rgba(37, 99, 235, 0.5)'
                     }}
                 >
-                    {/* Shimmer Effect */}
                     <div style={{ position: 'absolute', top: 0, left: '-100%', width: '50%', height: '100%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', transform: 'skewX(-20deg)', animation: 'shimmer 3s infinite' }} />
 
                     <div style={{ position: 'relative', zIndex: 10 }}>
@@ -764,14 +753,12 @@ const CTASection = () => {
     );
 };
 
-// --- Footer ---
 const Footer = () => {
     return (
         <footer style={{ background: '#f8fafc', paddingTop: '6rem', borderTop: '1px solid #e2e8f0' }}>
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '4rem', marginBottom: '4rem' }}>
 
-                    {/* Brand */}
                     <div>
                         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', marginBottom: '1.5rem' }}>
                             <div style={{ background: '#0f172a', padding: '0.5rem', borderRadius: '12px', display: 'flex' }}>
@@ -786,7 +773,6 @@ const Footer = () => {
                         </p>
                     </div>
 
-                    {/* Links */}
                     <div>
                         <h4 className="outfit-font" style={{ color: '#0f172a', fontWeight: 700, fontSize: '1.1rem', marginBottom: '1.5rem' }}>Solutions</h4>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -805,7 +791,6 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Contact */}
                     <div>
                         <h4 className="outfit-font" style={{ color: '#0f172a', fontWeight: 700, fontSize: '1.1rem', marginBottom: '1.5rem' }}>Enterprise Support</h4>
                         <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1rem' }}>Dedicated account managers available 24/7 for premium tier partners.</p>
@@ -827,10 +812,6 @@ const Footer = () => {
         </footer>
     );
 };
-
-// ==========================================
-// 4. MAIN EXPORT COMPONENT
-// ==========================================
 
 const Home = () => {
     useEffect(() => {
