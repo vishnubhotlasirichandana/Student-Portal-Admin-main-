@@ -47,10 +47,26 @@ const ProjectsView = () => {
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="projects-page">
             <style>{`
+                .stats-grid-custom { 
+                    display: grid; 
+                    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+                    gap: 1.5rem; 
+                }
+                .project-details-stats {
+                    display: grid; 
+                    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); 
+                    gap: 1rem; 
+                    margin-bottom: 2rem;
+                }
                 @media (max-width: 768px) {
                     .header-actions { flex-direction: column; align-items: stretch !important; gap: 1rem; }
                     .header-actions button { width: 100% !important; justify-content: center; }
                     .stats-grid-custom { grid-template-columns: 1fr !important; }
+                    .project-title-row { flex-direction: column; align-items: flex-start !important; }
+                    .project-title-row > div:last-child { width: 100%; justify-content: flex-start; margin-top: 1rem; }
+                    .project-title-row > div:last-child button { width: 100%; justify-content: center; }
+                    .project-doc-item { flex-direction: column; align-items: flex-start !important; }
+                    .project-doc-item .divider { display: none; }
                 }
             `}</style>
 
@@ -89,7 +105,7 @@ const ProjectsView = () => {
                     Loading projects...
                 </div>
             ) : viewMode === 'list' ? (
-                <motion.div variants={containerVariants} initial="hidden" animate="show" className="stats-grid stats-grid-custom" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="stats-grid-custom">
                     {projects.length === 0 ? (
                         <motion.div variants={itemVariants} className="glass" style={{ padding: '4rem 2rem', textAlign: 'center', gridColumn: '1 / -1', borderRadius: '16px', background: '#ffffff' }}>
                             <FolderKanban size={56} style={{ margin: '0 auto 1rem', color: '#cbd5e1' }} />
@@ -98,9 +114,9 @@ const ProjectsView = () => {
                         </motion.div>
                     ) : (
                         projects.map(p => (
-                            <motion.div key={p._id} variants={itemVariants} className="stat-card glass" style={{ cursor: 'pointer', flexDirection: 'column', alignItems: 'flex-start', gap: '1.25rem', padding: '1.5rem', borderRadius: '16px', position: 'relative', overflow: 'hidden', background: '#ffffff', border: '1px solid #e2e8f0' }} onClick={() => fetchProjectDetails(p._id)} whileHover={{ y: -5, boxShadow: '0 15px 30px rgba(14, 165, 233, 0.1)', borderColor: 'rgba(14, 165, 233, 0.3)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-start', zIndex: 1, gap: '1rem' }}>
-                                    <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--text-primary)', lineHeight: '1.3', flex: 1, fontFamily: 'Outfit, sans-serif' }}>{p.title}</h3>
+                            <motion.div key={p._id} variants={itemVariants} className="stat-card glass" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.25rem', padding: '1.5rem', borderRadius: '16px', position: 'relative', overflow: 'hidden', background: '#ffffff', border: '1px solid #e2e8f0' }} onClick={() => fetchProjectDetails(p._id)} whileHover={{ y: -5, boxShadow: '0 15px 30px rgba(14, 165, 233, 0.1)', borderColor: 'rgba(14, 165, 233, 0.3)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-start', zIndex: 1, gap: '1rem', flexWrap: 'wrap' }}>
+                                    <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--text-primary)', lineHeight: '1.3', flex: 1, fontFamily: 'Outfit, sans-serif', margin: 0 }}>{p.title}</h3>
                                     <span style={{ padding: '0.3rem 0.8rem', borderRadius: 'var(--radius-full)', fontSize: '0.75rem', fontWeight: '600', background: p.status === 'open' ? '#e0f2fe' : '#f1f5f9', color: p.status === 'open' ? '#0284c7' : '#475569', textTransform: 'uppercase', flexShrink: 0 }}>
                                         {p.status.replace('_', ' ')}
                                     </span>
@@ -108,7 +124,7 @@ const ProjectsView = () => {
                                 <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', margin: 0 }}>
                                     {p.description}
                                 </p>
-                                <div style={{ display: 'flex', gap: '1.25rem', marginTop: 'auto', zIndex: 1, fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: '500', width: '100%', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                                <div style={{ display: 'flex', gap: '1.25rem', marginTop: 'auto', zIndex: 1, fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: '500', width: '100%', paddingTop: '1rem', borderTop: '1px solid #f1f5f9', flexWrap: 'wrap' }}>
                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Users size={16} color="var(--primary)" /> {p.acceptedStudents?.length || 0}/{p.maxStudentsRequired || 0} Slots</span>
                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Clock size={16} color="#8b5cf6" /> {p.durationInWeeks} Weeks</span>
                                 </div>
@@ -185,13 +201,13 @@ const ProjectDetails = ({ project, onUpdate }) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <style>{`
-                .details-grid { grid-template-columns: 1fr 1fr; }
+                .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
                 @media (max-width: 1024px) { .details-grid { grid-template-columns: 1fr; } }
             `}</style>
 
             <div className="glass" style={{ padding: '2rem', borderRadius: '16px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
-                    <div style={{ flex: 1 }}>
+                <div className="project-title-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div style={{ flex: 1, minWidth: '250px' }}>
                         <h2 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1.75rem', fontFamily: 'Outfit, sans-serif' }}>{project.title}</h2>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
@@ -208,7 +224,7 @@ const ProjectDetails = ({ project, onUpdate }) => {
 
                 <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '2rem', whiteSpace: 'pre-wrap', fontSize: '1rem' }}>{project.description}</p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="project-details-stats">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.25rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                         <div style={{ background: '#e0f2fe', padding: '0.75rem', borderRadius: '10px', color: '#0ea5e9' }}><Clock size={24} /></div>
                         <div>
@@ -228,7 +244,7 @@ const ProjectDetails = ({ project, onUpdate }) => {
                             <div style={{ background: '#ffedd5', padding: '0.75rem', borderRadius: '10px', color: '#f97316' }}><LinkIcon size={24} /></div>
                             <div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>{videoTagToUse}</div>
-                                <a href={videoUrlToUse} target="_blank" rel="noopener noreferrer" style={{ fontWeight: '700', color: '#f97316', textDecoration: 'none', fontSize: '1.1rem' }}>Watch Media</a>
+                                <a href={videoUrlToUse} target="_blank" rel="noopener noreferrer" style={{ fontWeight: '700', color: '#f97316', textDecoration: 'none', fontSize: '1.1rem', wordBreak: 'break-all' }}>Watch Media</a>
                             </div>
                         </div>
                     )}
@@ -238,12 +254,12 @@ const ProjectDetails = ({ project, onUpdate }) => {
                 {project.status === 'completed' && (project.sourceCodeUrl || project.productionUrl) && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem', padding: '1.25rem', background: '#ecfdf5', borderRadius: '12px', border: '1px solid #d1fae5' }}>
                         {project.sourceCodeUrl && (
-                            <a href={project.sourceCodeUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#047857', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
+                            <a href={project.sourceCodeUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#047857', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', wordBreak: 'break-all' }}>
                                 <Code size={18} /> Source Code
                             </a>
                         )}
                         {project.productionUrl && (
-                            <a href={project.productionUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#0369a1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
+                            <a href={project.productionUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#0369a1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', wordBreak: 'break-all' }}>
                                 <LinkIcon size={18} /> Production Link
                             </a>
                         )}
@@ -257,16 +273,16 @@ const ProjectDetails = ({ project, onUpdate }) => {
                         </strong>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                             {project.projectDocuments.map((doc, idx) => (
-                                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#ffffff', padding: '0.75rem 1.25rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-                                    <span style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: '600' }}>{doc.tag || `Document ${idx + 1}`}</span>
-                                    <div style={{ width: '1px', height: '20px', background: '#e2e8f0' }}></div>
+                                <div key={idx} className="project-doc-item" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#ffffff', padding: '0.75rem 1.25rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', maxWidth: '100%' }}>
+                                    <span style={{ color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.tag || `Document ${idx + 1}`}</span>
+                                    <div className="divider" style={{ width: '1px', height: '20px', background: '#e2e8f0' }}></div>
                                     {doc.url ? (
-                                        <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#0ea5e9', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}>
-                                            <LinkIcon size={14} /> Open Link
+                                        <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#0ea5e9', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500', wordBreak: 'break-all' }}>
+                                            <LinkIcon size={14} style={{ flexShrink: 0 }} /> Open Link
                                         </a>
                                     ) : (
                                         <button onClick={() => handleDownload(doc.fileId, doc.fileName)} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'transparent', border: 'none', color: '#10b981', cursor: 'pointer', fontSize: '0.875rem', fontWeight: '500', padding: 0 }}>
-                                            <Download size={14} /> Download File
+                                            <Download size={14} style={{ flexShrink: 0 }} /> Download File
                                         </button>
                                     )}
                                 </div>
@@ -300,8 +316,8 @@ const ProjectDetails = ({ project, onUpdate }) => {
                 </div>
             </div>
 
-            <div className="details-grid" style={{ display: 'grid', gap: '1.5rem' }}>
-                <div className="glass" style={{ padding: '1.5rem', borderRadius: '16px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+            <div className="details-grid">
+                <div className="glass" style={{ padding: '1.5rem', borderRadius: '16px', background: '#ffffff', border: '1px solid #e2e8f0', width: '100%', boxSizing: 'border-box' }}>
                     <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>
                         <Users size={20} color="#64748b" /> Pending Applicants ({applicants.length})
                     </h3>
@@ -310,9 +326,9 @@ const ProjectDetails = ({ project, onUpdate }) => {
                             <div style={{ textAlign: 'center', padding: '3rem 0', color: '#94a3b8' }}><AlertCircle size={40} style={{ margin: '0 auto 1rem', opacity: 0.5 }} /><p style={{ fontSize: '0.9rem' }}>No pending applicants.</p></div>
                         ) : applicants.map(app => (
                             <div key={app.studentRef._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', flexWrap: 'wrap', gap: '1rem' }}>
-                                <div onClick={() => setSelectedStudent(app.studentRef._id)} style={{ cursor: 'pointer' }}>
-                                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>{app.studentRef.name}</div>
-                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>{app.studentRef.email}</div>
+                                <div onClick={() => setSelectedStudent(app.studentRef._id)} style={{ cursor: 'pointer', flex: 1, minWidth: '150px' }}>
+                                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem', wordBreak: 'break-word' }}>{app.studentRef.name}</div>
+                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem', wordBreak: 'break-all' }}>{app.studentRef.email}</div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                                     <button onClick={() => handleAction('accept', app.studentRef._id)} style={{ padding: '0.5rem 1rem', background: 'var(--success)', border: 'none', color: '#fff', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600' }}>Accept</button>
@@ -323,7 +339,7 @@ const ProjectDetails = ({ project, onUpdate }) => {
                     </div>
                 </div>
 
-                <div className="glass" style={{ padding: '1.5rem', borderRadius: '16px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+                <div className="glass" style={{ padding: '1.5rem', borderRadius: '16px', background: '#ffffff', border: '1px solid #e2e8f0', width: '100%', boxSizing: 'border-box' }}>
                     <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>
                         <CheckCircle2 size={20} color="var(--success)" /> Accepted Students ({acceptedStudents.length}/{project.maxStudentsRequired})
                     </h3>
@@ -332,9 +348,9 @@ const ProjectDetails = ({ project, onUpdate }) => {
                             <div style={{ textAlign: 'center', padding: '3rem 0', color: '#94a3b8' }}><Users size={40} style={{ margin: '0 auto 1rem', opacity: 0.5 }} /><p style={{ fontSize: '0.9rem' }}>No accepted students yet.</p></div>
                         ) : acceptedStudents.map(acc => (
                             <div key={acc.studentRef._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: '#ecfdf5', border: '1px solid #d1fae5', borderRadius: '12px', flexWrap: 'wrap', gap: '1rem' }}>
-                                <div onClick={() => setSelectedStudent(acc.studentRef._id)} style={{ cursor: 'pointer' }}>
-                                    <div style={{ fontWeight: 600, color: '#047857', fontSize: '1rem' }}>{acc.studentRef.name}</div>
-                                    <div style={{ fontSize: '0.85rem', color: '#059669', marginTop: '0.25rem' }}>{acc.studentRef.email}</div>
+                                <div onClick={() => setSelectedStudent(acc.studentRef._id)} style={{ cursor: 'pointer', flex: 1, minWidth: '150px' }}>
+                                    <div style={{ fontWeight: 600, color: '#047857', fontSize: '1rem', wordBreak: 'break-word' }}>{acc.studentRef.name}</div>
+                                    <div style={{ fontSize: '0.85rem', color: '#059669', marginTop: '0.25rem', wordBreak: 'break-all' }}>{acc.studentRef.email}</div>
                                 </div>
                                 {project.status !== 'completed' && project.status !== 'cancelled' && (
                                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -356,7 +372,7 @@ const ProjectDetails = ({ project, onUpdate }) => {
 };
 
 // ----------------------------------------------------------------------------------------------------
-// COMPLETE PROJECT MODAL (Source Code & Production Links)
+// COMPLETE PROJECT MODAL
 // ----------------------------------------------------------------------------------------------------
 const CompleteProjectModal = ({ projectId, onClose, onSuccess }) => {
     const [sourceCodeUrl, setSourceCodeUrl] = useState('');
@@ -406,7 +422,7 @@ const CompleteProjectModal = ({ projectId, onClose, onSuccess }) => {
                         <input
                             type="url" required value={sourceCodeUrl} onChange={e => setSourceCodeUrl(e.target.value)}
                             placeholder="https://github.com/org/project"
-                            style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }}
+                            style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
                             onFocus={e => e.target.style.borderColor = '#10b981'}
                             onBlur={e => e.target.style.borderColor = '#cbd5e1'}
                         />
@@ -416,15 +432,15 @@ const CompleteProjectModal = ({ projectId, onClose, onSuccess }) => {
                         <input
                             type="url" value={productionUrl} onChange={e => setProductionUrl(e.target.value)}
                             placeholder="https://my-project.example.com"
-                            style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit' }}
+                            style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
                             onFocus={e => e.target.style.borderColor = '#10b981'}
                             onBlur={e => e.target.style.borderColor = '#cbd5e1'}
                         />
                     </div>
 
                     <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', paddingTop: '0.5rem', flexWrap: 'wrap' }}>
-                        <button type="button" onClick={onClose} style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
-                        <button type="submit" disabled={completing} style={{ padding: '0.75rem 2rem', borderRadius: '8px', background: completing ? '#94a3b8' : 'linear-gradient(135deg, #10b981, #0ea5e9)', border: 'none', color: '#fff', cursor: completing ? 'default' : 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)' }}>
+                        <button type="button" onClick={onClose} style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: 600, flex: '1 1 auto', textAlign: 'center' }}>Cancel</button>
+                        <button type="submit" disabled={completing} style={{ padding: '0.75rem 2rem', borderRadius: '8px', background: completing ? '#94a3b8' : 'linear-gradient(135deg, #10b981, #0ea5e9)', border: 'none', color: '#fff', cursor: completing ? 'default' : 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)', flex: '1 1 auto' }}>
                             <CheckCircle2 size={16} /> {completing ? 'Completing...' : 'Complete Project'}
                         </button>
                     </div>
@@ -437,7 +453,7 @@ const CompleteProjectModal = ({ projectId, onClose, onSuccess }) => {
 // ----------------------------------------------------------------------------------------------------
 // SHARED STYLES FOR MODALS
 // ----------------------------------------------------------------------------------------------------
-const inputStyle = { width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none', transition: 'border 0.2s' };
+const inputStyle = { width: '100%', boxSizing: 'border-box', padding: '0.875rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none', transition: 'border 0.2s' };
 const labelStyle = { display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: '600' };
 
 // ----------------------------------------------------------------------------------------------------
@@ -490,7 +506,7 @@ const CreateProjectModal = ({ onClose, onSuccess }) => {
 
     return (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '1rem' }}>
-            <style>{`.modal-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; } @media (max-width: 640px) { .modal-grid-2 { grid-template-columns: 1fr; } } .form-input:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }`}</style>
+            <style>{`.modal-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; } @media (max-width: 640px) { .modal-grid-2 { grid-template-columns: 1fr; } .modal-actions-wrapper { flex-direction: column; } .modal-actions-wrapper button { width: 100%; justify-content: center; } } .form-input:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }`}</style>
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="glass" style={{ width: '100%', maxWidth: '750px', padding: '0', borderRadius: '16px', background: '#ffffff', overflow: 'hidden', display: 'flex', flexDirection: 'column', maxHeight: '92vh', boxShadow: '0 24px 50px rgba(0,0,0,0.1)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
                     <h2 style={{ fontSize: '1.25rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>Post New Project</h2>
@@ -541,15 +557,15 @@ const CreateProjectModal = ({ onClose, onSuccess }) => {
                             </div>
                         </div>
                         <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
                                 <h4 style={{ fontSize: '1rem', color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}><FileText size={18} color="#10b981" /> Documents <span style={{ color: '#94a3b8', fontWeight: 'normal', fontSize: '0.85rem' }}>(Optional)</span></h4>
                                 <button type="button" onClick={handleAddDoc} style={{ background: 'var(--primary)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.4rem', boxShadow: '0 2px 8px rgba(14, 165, 233, 0.3)' }}><Plus size={14} /> Add Resource</button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                                 {docs.map((doc, idx) => (
                                     <div key={idx} style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', position: 'relative', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
-                                        <button type="button" onClick={() => handleRemoveDoc(idx)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#ef4444', cursor: 'pointer', padding: '0.4rem', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}><Trash2 size={16} /></button>
-                                        <div className="modal-grid-2" style={{ marginBottom: '1rem', paddingRight: '3rem' }}>
+                                        <button type="button" onClick={() => handleRemoveDoc(idx)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#ef4444', cursor: 'pointer', padding: '0.4rem', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 10 }}><Trash2 size={16} /></button>
+                                        <div className="modal-grid-2" style={{ marginBottom: '1rem', paddingRight: '2.5rem' }}>
                                             <div>
                                                 <label style={{ ...labelStyle, fontSize: '0.8rem' }}>Resource Tag</label>
                                                 <input className="form-input" type="text" placeholder="e.g. API Docs" style={{ ...inputStyle, padding: '0.6rem 0.8rem' }} value={doc.tag} onChange={e => handleDocChange(idx, 'tag', e.target.value)} />
@@ -571,7 +587,7 @@ const CreateProjectModal = ({ onClose, onSuccess }) => {
                                             ) : (
                                                 <>
                                                     <label style={{ ...labelStyle, fontSize: '0.8rem' }}>File Attachment</label>
-                                                    <input type="file" style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px dashed #cbd5e1', borderRadius: '8px', background: '#f8fafc', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer' }} onChange={e => handleDocChange(idx, 'file', e.target.files[0])} />
+                                                    <input type="file" style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px dashed #cbd5e1', borderRadius: '8px', background: '#f8fafc', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer', boxSizing: 'border-box' }} onChange={e => handleDocChange(idx, 'file', e.target.files[0])} />
                                                 </>
                                             )}
                                         </div>
@@ -582,7 +598,7 @@ const CreateProjectModal = ({ onClose, onSuccess }) => {
                         </div>
                     </form>
                 </div>
-                <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <div className="modal-actions-wrapper" style={{ padding: '1.25rem 2rem', borderTop: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
                     <button type="button" onClick={onClose} style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: '600' }}>Cancel</button>
                     <button type="submit" form="create-project-form" className="btn-auth" disabled={loading} style={{ margin: 0, width: 'auto', padding: '0.75rem 2rem', fontSize: '0.95rem' }}>{loading ? 'Posting...' : 'Post Project'}</button>
                 </div>
@@ -592,7 +608,7 @@ const CreateProjectModal = ({ onClose, onSuccess }) => {
 };
 
 // ----------------------------------------------------------------------------------------------------
-// UPDATE MEDIA MODAL (Fully Restyled & Professional)
+// UPDATE MEDIA MODAL
 // ----------------------------------------------------------------------------------------------------
 const UpdateMediaModal = ({ project, onClose, onSuccess }) => {
     const [videoTag, setVideoTag] = useState(project.video?.tag || project.videoUrl ? 'Project Video' : '');
@@ -648,7 +664,7 @@ const UpdateMediaModal = ({ project, onClose, onSuccess }) => {
 
     return (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '1rem' }}>
-            <style>{`.modal-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; } @media (max-width: 640px) { .modal-grid-2 { grid-template-columns: 1fr; } } .form-input:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }`}</style>
+            <style>{`.modal-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; } @media (max-width: 640px) { .modal-grid-2 { grid-template-columns: 1fr; } .modal-actions-wrapper { flex-direction: column; } .modal-actions-wrapper button { width: 100%; justify-content: center; } } .form-input:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }`}</style>
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="glass" style={{ width: '100%', maxWidth: '750px', padding: '0', borderRadius: '16px', background: '#ffffff', overflow: 'hidden', display: 'flex', flexDirection: 'column', maxHeight: '92vh', boxShadow: '0 24px 50px rgba(0,0,0,0.1)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
                     <h2 style={{ fontSize: '1.25rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>Edit Project Resources</h2>
@@ -659,7 +675,6 @@ const UpdateMediaModal = ({ project, onClose, onSuccess }) => {
 
                     <form id="update-media-form" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
-                        {/* Video Editing Card */}
                         <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                             <h4 style={{ fontSize: '1rem', marginBottom: '1.25rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Video size={18} color="var(--primary)" /> Video Resource</h4>
                             <div className="modal-grid-2">
@@ -674,18 +689,17 @@ const UpdateMediaModal = ({ project, onClose, onSuccess }) => {
                             </div>
                         </div>
 
-                        {/* Document Editing Cards */}
                         <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
                                 <h4 style={{ fontSize: '1rem', color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}><FileText size={18} color="#10b981" /> Documents</h4>
                                 <button type="button" onClick={handleAddDoc} style={{ background: 'var(--primary)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.4rem', boxShadow: '0 2px 8px rgba(14, 165, 233, 0.3)' }}><Plus size={14} /> Add Resource</button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                                 {docs.map((doc, idx) => (
                                     <div key={idx} style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', position: 'relative', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
-                                        <button type="button" onClick={() => handleRemoveDoc(idx)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#ef4444', cursor: 'pointer', padding: '0.4rem', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}><Trash2 size={16} /></button>
+                                        <button type="button" onClick={() => handleRemoveDoc(idx)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#ef4444', cursor: 'pointer', padding: '0.4rem', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 10 }}><Trash2 size={16} /></button>
 
-                                        <div className="modal-grid-2" style={{ marginBottom: '1rem', paddingRight: '3rem' }}>
+                                        <div className="modal-grid-2" style={{ marginBottom: '1rem', paddingRight: '2.5rem' }}>
                                             <div>
                                                 <label style={{ ...labelStyle, fontSize: '0.8rem' }}>Resource Tag</label>
                                                 <input className="form-input" type="text" placeholder="e.g. API Docs" style={{ ...inputStyle, padding: '0.6rem 0.8rem' }} value={doc.tag} onChange={e => handleDocChange(idx, 'tag', e.target.value)} />
@@ -713,11 +727,11 @@ const UpdateMediaModal = ({ project, onClose, onSuccess }) => {
                                                             <FileCheck2 size={20} color="#10b981" />
                                                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                                 <span style={{ fontWeight: '600', fontSize: '0.85rem' }}>Existing File Attached</span>
-                                                                <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>{doc.fileName || 'Document.pdf'}</span>
+                                                                <span style={{ fontSize: '0.75rem', opacity: 0.8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{doc.fileName || 'Document.pdf'}</span>
                                                             </div>
                                                         </div>
                                                     ) : (
-                                                        <input type="file" style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px dashed #cbd5e1', borderRadius: '8px', background: '#f8fafc', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer' }} onChange={e => handleDocChange(idx, 'file', e.target.files[0])} />
+                                                        <input type="file" style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px dashed #cbd5e1', borderRadius: '8px', background: '#f8fafc', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer', boxSizing: 'border-box' }} onChange={e => handleDocChange(idx, 'file', e.target.files[0])} />
                                                     )}
                                                 </>
                                             )}
@@ -729,7 +743,7 @@ const UpdateMediaModal = ({ project, onClose, onSuccess }) => {
                         </div>
                     </form>
                 </div>
-                <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <div className="modal-actions-wrapper" style={{ padding: '1.25rem 2rem', borderTop: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
                     <button type="button" onClick={onClose} style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: '600' }}>Cancel</button>
                     <button type="submit" form="update-media-form" className="btn-auth" disabled={loading} style={{ margin: 0, width: 'auto', padding: '0.75rem 2rem', fontSize: '0.95rem' }}>{loading ? 'Saving...' : 'Save Resources'}</button>
                 </div>

@@ -64,7 +64,7 @@ const ProjectDetailsSidebar = ({ project, isMobile, onClose }) => {
     const videoTagToUse = project?.video?.tag || project?.videoTag || 'Project Video';
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#ffffff' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#ffffff', width: '100%', boxSizing: 'border-box' }}>
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
                 <h3 style={{ fontSize: '1.05rem', margin: 0, fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'Outfit, sans-serif' }}>
                     <LayoutTemplate size={18} color="var(--primary)" />
@@ -82,7 +82,7 @@ const ProjectDetailsSidebar = ({ project, isMobile, onClose }) => {
                     <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '0.75rem', lineHeight: '1.3', fontWeight: '700', fontFamily: 'Outfit, sans-serif' }}>
                         {project.title}
                     </h4>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', wordBreak: 'break-word' }}>
                         {project.description}
                     </p>
                 </div>
@@ -120,8 +120,8 @@ const ProjectDetailsSidebar = ({ project, isMobile, onClose }) => {
                         <strong style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             <PlaySquare size={14} color="#0ea5e9" /> Video Resource
                         </strong>
-                        <a href={videoUrlToUse} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#e0f2fe', border: '1px solid #bae6fd', borderRadius: '8px', textDecoration: 'none', transition: 'all 0.2s ease' }}>
-                            <span style={{ fontSize: '0.875rem', color: '#0369a1', fontWeight: '600' }}>{videoTagToUse}</span>
+                        <a href={videoUrlToUse} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#e0f2fe', border: '1px solid #bae6fd', borderRadius: '8px', textDecoration: 'none', transition: 'all 0.2s ease', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.875rem', color: '#0369a1', fontWeight: '600', wordBreak: 'break-all' }}>{videoTagToUse}</span>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', color: '#0284c7', fontWeight: '700' }}><LinkIcon size={12} /> Watch URL</span>
                         </a>
                     </div>
@@ -135,9 +135,9 @@ const ProjectDetailsSidebar = ({ project, isMobile, onClose }) => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                             {project.projectDocuments.map((doc, i) => (
                                 <div key={i} style={{ display: 'flex', flexDirection: 'column', background: '#ffffff', border: '1px solid #e2e8f0', padding: '0.8rem 1rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-                                    <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.4rem' }}>{doc.tag || `Resource ${i + 1}`}</span>
+                                    <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.4rem', wordBreak: 'break-word' }}>{doc.tag || `Resource ${i + 1}`}</span>
                                     {doc.url ? (
-                                        <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none', fontWeight: '600', width: 'fit-content' }}>
+                                        <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none', fontWeight: '600', width: 'fit-content', wordBreak: 'break-all' }}>
                                             <LinkIcon size={12} /> Open External Link
                                         </a>
                                     ) : (
@@ -163,8 +163,6 @@ const WhatsappChatLayout = ({ projects, filters, sort }) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [showDetails, setShowDetails] = useState(window.innerWidth >= 1024);
 
-    // CRITICAL MOBILE FIX: Force clear the active channel on initial mount if on a small screen
-    // This stops it from remembering a previous session and jumping into a chat
     useEffect(() => {
         if (window.innerWidth < 768) {
             setActiveChannel(null);
@@ -193,7 +191,7 @@ const WhatsappChatLayout = ({ projects, filters, sort }) => {
     const showChannel = !isMobile || (isMobile && channel);
 
     return (
-        <div style={{ display: 'flex', width: '100%', height: '100%', background: '#ffffff' }}>
+        <div style={{ display: 'flex', width: '100%', height: '100%', background: '#ffffff', overflow: 'hidden' }}>
 
             {/* 1. Groups List Sidebar */}
             {showChannelList && (
@@ -212,7 +210,6 @@ const WhatsappChatLayout = ({ projects, filters, sort }) => {
                         <ChannelList
                             filters={filters}
                             sort={sort}
-                            // Stream Prop Fix: Prevent it from aggressively auto-selecting the first chat on mobile devices
                             setActiveChannelOnMount={!isMobile}
                         />
                     </div>
@@ -221,11 +218,11 @@ const WhatsappChatLayout = ({ projects, filters, sort }) => {
 
             {/* 2. Main Chat Area */}
             {showChannel && (
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative', overflow: 'hidden' }}>
                     <Channel>
                         <Window>
                             <div style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #e2e8f0', background: '#ffffff', padding: isMobile ? '0 0.5rem' : '0' }}>
-                                {/* Mobile Back Arrow to clear the active channel and return to Groups */}
+                                {/* Mobile Back Arrow */}
                                 {isMobile && (
                                     <button
                                         onClick={() => setActiveChannel(null)}
@@ -393,9 +390,12 @@ const ChatInterface = () => {
                     display: none !important; 
                 }
                 @keyframes spin { 100% { transform: rotate(360deg); } }
+                @media (max-width: 768px) {
+                    .chat-interface-wrapper { height: calc(100vh - 80px) !important; border-radius: 0 !important; border: none !important; }
+                }
             `}</style>
 
-            <div style={{ height: 'calc(100vh - 120px)', width: '100%', display: 'flex', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(14, 165, 233, 0.05)', background: '#ffffff' }}>
+            <div className="chat-interface-wrapper" style={{ height: 'calc(100vh - 120px)', width: '100%', display: 'flex', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(14, 165, 233, 0.05)', background: '#ffffff', boxSizing: 'border-box' }}>
                 <Chat client={client} theme="str-chat__theme-light">
                     <WhatsappChatLayout projects={projects} filters={filters} sort={sort} />
                 </Chat>

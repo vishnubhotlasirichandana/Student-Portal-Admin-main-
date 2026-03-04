@@ -6,7 +6,30 @@ import { universityApi, authApi } from '../services/api';
 
 const UniversityAuth = () => {
     return (
-        <div className="auth-page">
+        <div className="auth-page" style={{ padding: '1rem', boxSizing: 'border-box', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Added style block to ensure elements conform and buttons stack on mobile safely */}
+            <style>{`
+                .auth-card {
+                    width: 100%;
+                    max-width: 500px;
+                    margin: 0 auto;
+                    box-sizing: border-box;
+                }
+                .form-group input, .form-group select {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+                .btn-auth {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                }
+                @media (max-width: 640px) {
+                    .auth-card { padding: 1.5rem !important; }
+                    .btn-auth { width: 100% !important; margin-bottom: 0.5rem; }
+                }
+            `}</style>
             <Routes>
                 <Route path="/" element={<UniversityLanding />} />
                 <Route path="/register" element={<UniversityRegister />} />
@@ -47,12 +70,10 @@ const UniversityRegister = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Domain Check States
     const [domainVerified, setDomainVerified] = useState(false);
     const [needsManualVerification, setNeedsManualVerification] = useState(false);
     const [domainCheckMessage, setDomainCheckMessage] = useState('');
 
-    // For Search
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isManualEntry, setIsManualEntry] = useState(false);
@@ -113,8 +134,6 @@ const UniversityRegister = () => {
         try {
             const result = await universityApi.register(formData);
             if (result.data.success) {
-                // Bypass auto-login to prevent the "Contact Super Admin" 403 error page.
-                // Redirect user to the Success UI.
                 setStep(6);
             }
         } catch (err) {
@@ -315,7 +334,7 @@ const UniversityRegister = () => {
                         )}
 
                         <div style={{ margin: '1.5rem 0' }}>
-                            <button onClick={handleVerifyDomain} disabled={loading || domainVerified} className="btn-auth" style={{ background: domainVerified ? (needsManualVerification ? '#f59e0b' : 'var(--success)') : 'var(--primary)' }}>
+                            <button onClick={handleVerifyDomain} disabled={loading || domainVerified} className="btn-auth" style={{ width: '100%', background: domainVerified ? (needsManualVerification ? '#f59e0b' : 'var(--success)') : 'var(--primary)' }}>
                                 {loading ? 'Verifying...' : domainVerified ? 'Domain Checked ✓' : 'Verify Domain Match'}
                             </button>
                         </div>
@@ -336,13 +355,13 @@ const UniversityRegister = () => {
                         <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>
                             Your institution's registration has been securely processed. It is currently pending Super Admin review. You will receive an email once approved.
                         </p>
-                        <button onClick={() => navigate('/')} className="btn-auth" style={{ marginTop: '2rem' }}>Return to Home</button>
+                        <button onClick={() => navigate('/')} className="btn-auth" style={{ marginTop: '2rem', width: '100%' }}>Return to Home</button>
                     </motion.div>
                 )}
             </AnimatePresence>
 
             {step !== 6 && (
-                <div className="auth-footer">
+                <div className="auth-footer" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                     Already registered? <Link to="/university/login">Sign In</Link>
                 </div>
             )}
@@ -409,9 +428,9 @@ const UniversityLogin = () => {
                         <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required />
                     </div>
                 </div>
-                <button type="submit" className="btn-auth" disabled={loading}>{loading ? 'Authenticating...' : 'Sign In'}</button>
+                <button type="submit" className="btn-auth" disabled={loading} style={{ width: '100%' }}>{loading ? 'Authenticating...' : 'Sign In'}</button>
             </form>
-            <div className="auth-footer">
+            <div className="auth-footer" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                 New institution? <Link to="/university/register">Register</Link>
             </div>
         </motion.div>
